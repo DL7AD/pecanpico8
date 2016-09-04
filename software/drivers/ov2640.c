@@ -645,14 +645,14 @@ ssdv_config_t *ov2640_config;
   */
 bool OV2640_Snapshot2RAM(void)
 {
-	palClearPad(PORT(LED_2YELLOW), PIN(LED_2YELLOW)); // Yellow LED shows when image is captured
+	palClearPad(PORT(IO_LED2), PIN(IO_LED2)); // Yellow LED shows when image is captured
 
 	// Capture enable
 	TRACE_INFO("CAM  > Capture image");
 	OV2640_CaptureDCMI();
 	chThdSleepMilliseconds(1000);
 
-	palSetPad(PORT(LED_2YELLOW), PIN(LED_2YELLOW));
+	palSetPad(PORT(IO_LED2), PIN(IO_LED2));
 
 	return true;
 }

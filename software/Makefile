@@ -136,7 +136,6 @@ CSRC = $(STARTUPSRC) \
        drivers/bme280.c \
        drivers/pac1720.c \
        drivers/ov2640.c \
-       drivers/sd.c \
        drivers/flash/flash.c \
        drivers/flash/helper.c \
        drivers/flash/ihex.c \
@@ -150,6 +149,7 @@ CSRC = $(STARTUPSRC) \
        math/geofence.c \
        config.c \
        fatfs/src/ff.c \
+       drivers/usbcfg.c \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global

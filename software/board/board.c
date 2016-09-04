@@ -123,6 +123,6 @@ bool mmc_lld_is_write_protected(MMCDriver *mmcp) {
  * @todo    Add your board-specific code, if any.
  */
 void boardInit(void) {
-	palClearPad(PORT(LED_4GREEN), PIN(LED_4GREEN));	// Show I'M ALIVE
-	palClearPad(PORT(CAM_EN), PIN(CAM_EN));			// Disable camera
+	palClearPad(PORT(IO_LED4), PIN(IO_LED4));	// Show I'M ALIVE
+	palClearPad(PORT(CAM_EN), PIN(CAM_EN));		// Disable camera
 }

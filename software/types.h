@@ -1,7 +1,6 @@
 #ifndef __TYPES_H__
 #define __TYPES_H__
 
-typedef uint32_t radio_t; // Radio type
 typedef enum { // Modulation type
 	MOD_OOK,
 	MOD_2FSK,

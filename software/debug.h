@@ -16,30 +16,30 @@ extern const SerialConfig uart_config;
 
 // Initializer for serial debug and LEDs
 #define DEBUG_INIT() { \
-	palSetPadMode(PORT(LED_4GREEN), PIN(LED_4GREEN), PAL_MODE_OUTPUT_PUSHPULL); \
-	palSetPadMode(PORT(LED_3GREEN), PIN(LED_3GREEN), PAL_MODE_OUTPUT_PUSHPULL); \
-	palSetPadMode(PORT(LED_2YELLOW), PIN(LED_2YELLOW), PAL_MODE_OUTPUT_PUSHPULL); \
-	palSetPadMode(PORT(LED_1RED), PIN(LED_1RED), PAL_MODE_OUTPUT_PUSHPULL); \
+	palSetPadMode(PORT(IO_LED4), PIN(IO_LED4), PAL_MODE_OUTPUT_PUSHPULL); \
+	palSetPadMode(PORT(IO_LED3), PIN(IO_LED3), PAL_MODE_OUTPUT_PUSHPULL); \
+	palSetPadMode(PORT(IO_LED2), PIN(IO_LED2), PAL_MODE_OUTPUT_PUSHPULL); \
+	palSetPadMode(PORT(IO_LED1), PIN(IO_LED1), PAL_MODE_OUTPUT_PUSHPULL); \
 	\
-	sdStart(&SD4, &uart_config); \
-	palSetPadMode(GPIOA, 0, PAL_MODE_ALTERNATE(8)); \
-	palSetPadMode(GPIOA, 1, PAL_MODE_ALTERNATE(8)); \
+	sdStart(&SD3, &uart_config); \
+	palSetPadMode(PORT(IO_TXD), PIN(IO_TXD), PAL_MODE_ALTERNATE(7)); \
+	palSetPadMode(PORT(IO_RXD), PIN(IO_RXD), PAL_MODE_ALTERNATE(7)); \
 	chMtxObjectInit(&trace_mtx); \
 	chMtxLock(&trace_mtx); \
-	chprintf((BaseSequentialStream*)&SD4, "\r\n"); \
+	chprintf((BaseSequentialStream*)&SD3, "\r\n"); \
 	chMtxUnlock(&trace_mtx); \
 }
 
 #define TRACE_BASE(format, type, args...) { \
 	chMtxLock(&trace_mtx); \
 	if(TRACE_TIME) \
-		chprintf((BaseSequentialStream*)&SD4, "[%8d.%03d]", chVTGetSystemTimeX()/CH_CFG_ST_FREQUENCY, (chVTGetSystemTimeX()*1000/CH_CFG_ST_FREQUENCY)%1000); \
-	chprintf((BaseSequentialStream*)&SD4, "[%s]", type); \
+		chprintf((BaseSequentialStream*)&SD3, "[%8d.%03d]", chVTGetSystemTimeX()/CH_CFG_ST_FREQUENCY, (chVTGetSystemTimeX()*1000/CH_CFG_ST_FREQUENCY)%1000); \
+	chprintf((BaseSequentialStream*)&SD3, "[%s]", type); \
 	if(TRACE_FILE) \
-		chprintf((BaseSequentialStream*)&SD4, "[%10s %04d]", __FILENAME__, __LINE__); \
-	chprintf((BaseSequentialStream*)&SD4, " "); \
-	chprintf((BaseSequentialStream*)&SD4, (format), ##args); \
-	chprintf((BaseSequentialStream*)&SD4, "\r\n"); \
+		chprintf((BaseSequentialStream*)&SD3, "[%10s %04d]", __FILENAME__, __LINE__); \
+	chprintf((BaseSequentialStream*)&SD3, " "); \
+	chprintf((BaseSequentialStream*)&SD3, (format), ##args); \
+	chprintf((BaseSequentialStream*)&SD3, "\r\n"); \
 	chMtxUnlock(&trace_mtx); \
 }
 
@@ -78,20 +78,20 @@ extern const SerialConfig uart_config;
 
 #define TRACE_BIN(data, len) { \
 	chMtxLock(&trace_mtx); \
-	chprintf((BaseSequentialStream*)&SD4, "[%8d.%03d][DEBUG] ", chVTGetSystemTimeX()/CH_CFG_ST_FREQUENCY, (chVTGetSystemTimeX()*1000/CH_CFG_ST_FREQUENCY)%1000); \
-	chprintf((BaseSequentialStream*)&SD4, "     > Binary data (%d bits)\r\n", (len)); \
+	chprintf((BaseSequentialStream*)&SD3, "[%8d.%03d][DEBUG] ", chVTGetSystemTimeX()/CH_CFG_ST_FREQUENCY, (chVTGetSystemTimeX()*1000/CH_CFG_ST_FREQUENCY)%1000); \
+	chprintf((BaseSequentialStream*)&SD3, "     > Binary data (%d bits)\r\n", (len)); \
 	for(uint32_t i=0; i<((len)+7)/8; i+=8) \
-		chprintf((BaseSequentialStream*)&SD4, "%s 0x%03x ... 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x\r\n", \
+		chprintf((BaseSequentialStream*)&SD3, "%s 0x%03x ... 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x\r\n", \
 		TRACE_TAB, i, (data)[i], (data)[i+1], (data)[i+2], (data)[i+3], (data)[i+4], (data)[i+5], (data)[i+6], (data)[i+7]); \
 	chMtxUnlock(&trace_mtx); \
 }
 
 #define TRACE_BIN_CHAR(data, len) { \
 	chMtxLock(&trace_mtx); \
-	chprintf((BaseSequentialStream*)&SD4, "[%8d.%03d][DEBUG] ", chVTGetSystemTimeX()/CH_CFG_ST_FREQUENCY, (chVTGetSystemTimeX()*1000/CH_CFG_ST_FREQUENCY)%1000); \
-	chprintf((BaseSequentialStream*)&SD4, "     > Binary data (%d bits)\r\n", (len)); \
+	chprintf((BaseSequentialStream*)&SD3, "[%8d.%03d][DEBUG] ", chVTGetSystemTimeX()/CH_CFG_ST_FREQUENCY, (chVTGetSystemTimeX()*1000/CH_CFG_ST_FREQUENCY)%1000); \
+	chprintf((BaseSequentialStream*)&SD3, "     > Binary data (%d bits)\r\n", (len)); \
 	for(uint32_t i=0; i<((len)+7)/8; i+=8) \
-		chprintf((BaseSequentialStream*)&SD4, "%s %c%c%c%c%c%c%c%c\r\n", \
+		chprintf((BaseSequentialStream*)&SD3, "%s %c%c%c%c%c%c%c%c\r\n", \
 		TRACE_TAB, i, (data)[i], (data)[i+1], (data)[i+2], (data)[i+3], (data)[i+4], (data)[i+5], (data)[i+6], (data)[i+7]); \
 	chMtxUnlock(&trace_mtx); \
 }

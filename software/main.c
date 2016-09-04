@@ -10,7 +10,7 @@
 #include "pi2c.h"
 #include "pac1720.h"
 #include "bme280.h"
-#include "sd.h"
+#include "usbcfg.h"
 
 static virtual_timer_t vt;			// Virtual timer for LED blinking
 uint32_t counter = 0;				// Main thread counter
@@ -34,11 +34,11 @@ static const WDGConfig wdgcfg = {
   */
 static void led_cb(void *led_sw) {
 	// Switch LEDs
-	palWritePad(PORT(LED_3GREEN), PIN(LED_3GREEN), (bool)led_sw);	// Show I'M ALIVE
+	palWritePad(PORT(IO_LED3), PIN(IO_LED3), (bool)led_sw);	// Show I'M ALIVE
 	if(error) {
-		palWritePad(PORT(LED_1RED), PIN(LED_1RED), (bool)led_sw);	// Show error
+		palWritePad(PORT(IO_LED1), PIN(IO_LED1), (bool)led_sw);	// Show error
 	} else {
-		palSetPad(PORT(LED_1RED), PIN(LED_1RED));	// Shut off error
+		palSetPad(PORT(IO_LED1), PIN(IO_LED1));	// Shut off error
 	}
 
 	led_sw = (void*)!led_sw; // Set next state
@@ -53,7 +53,36 @@ static void led_cb(void *led_sw) {
   */
 int main(void) {
 	halInit();					// Startup HAL
+
+	// Ramp up to 2.8V
+	palClearPad(PORT(VBOOST), PIN(VBOOST));
+	palSetPadMode(PORT(VBOOST), PIN(VBOOST), PAL_MODE_OUTPUT_PUSHPULL);
+	palClearPad(PORT(VBOOST), PIN(VBOOST));
+
 	chSysInit();				// Startup RTOS
+
+
+
+
+
+  sduObjectInit(&SDU1);
+  sduStart(&SDU1, &serusbcfg);
+
+  /*
+   * Activates the USB driver and then the USB bus pull-up on D+.
+   * Note, a delay is inserted in order to not have to disconnect the cable
+   * after a reset.
+   */
+  usbDisconnectBus(serusbcfg.usbp);
+  chThdSleepMilliseconds(3000);
+  usbStart(serusbcfg.usbp, &usbcfg);
+  usbConnectBus(serusbcfg.usbp);
+
+
+
+
+
+	//palSetPadMode(PORT(VBOOST), PIN(VBOOST), PAL_MODE_INPUT);
 
 	DEBUG_INIT();				// Debug Init (Serial debug port, LEDs)
 	TRACE_INFO("MAIN > Startup");
@@ -67,7 +96,6 @@ int main(void) {
 	initEssentialModules();		// Startup required modules (input/output modules)
 	initModules();				// Startup optional modules (eg. POSITION, LOG, ...)
 	pac1720_init();				// Startup current measurement
-	initSD();					// Startup SD
 
 	chThdSleepMilliseconds(100);
 
@@ -78,7 +106,7 @@ int main(void) {
 	chThdSleepMilliseconds(1000);
 
 	while(true) {
-		// Print time every 10 sec
+		/*// Print time every 10 sec
 		if(counter % 10 == 0)
 			PRINT_TIME("MAIN");
 
@@ -157,7 +185,7 @@ int main(void) {
 			wdgReset(&WDGD1);	// Reset hardware watchdog at no error
 		} else {
 			TRACE_ERROR("WDG  > No reset");
-		}
+		}*/
 
 		chThdSleepMilliseconds(1000);
 		counter++;

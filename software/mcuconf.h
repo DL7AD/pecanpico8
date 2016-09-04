@@ -41,11 +41,11 @@
 #define STM32_LSI_ENABLED                   TRUE
 #define STM32_HSE_ENABLED                   TRUE
 #define STM32_LSE_ENABLED                   FALSE
-#define STM32_CLOCK48_REQUIRED              FALSE
+#define STM32_CLOCK48_REQUIRED              TRUE
 #define STM32_SW                            STM32_SW_HSE
 #define STM32_PLLSRC                        STM32_PLLSRC_HSE
 #define STM32_PLLM_VALUE                    26					/* Predivider PLLIN = HSI/PPLM = 16MHz/16 = 1MHz */
-#define STM32_PLLN_VALUE                    360					/* Multiplier inPLL = PLLIN*PPLN = 1MHz*360 = 360MHz */
+#define STM32_PLLN_VALUE                    336					/* Multiplier inPLL = PLLIN*PPLN = 1MHz*360 = 360MHz */
 #define STM32_PLLP_VALUE                    2					/* Divider PLLOUT = inPLL/PLLP = 360MHz/2 = 180MHz */
 #define STM32_PLLQ_VALUE                    7					/* Divider for USB USB_CLK = PLLOUT/PLLQ = 180MHz/4 = 45MHz */
 #define STM32_HPRE                          STM32_HPRE_DIV1		/* AHB prescaler PLLOUT/HPRE = 360MHz/1 = 360MHz */
@@ -234,9 +234,9 @@
  */
 #define STM32_SERIAL_USE_USART1             FALSE
 #define STM32_SERIAL_USE_USART2             FALSE
-#define STM32_SERIAL_USE_USART3             FALSE
-#define STM32_SERIAL_USE_UART4              TRUE
-#define STM32_SERIAL_USE_UART5              FALSE
+#define STM32_SERIAL_USE_USART3             TRUE
+#define STM32_SERIAL_USE_UART4              FALSE
+#define STM32_SERIAL_USE_UART5              TRUE
 #define STM32_SERIAL_USE_USART6             FALSE
 #define STM32_SERIAL_USART1_PRIORITY        12
 #define STM32_SERIAL_USART2_PRIORITY        12
@@ -309,7 +309,7 @@
 /*
  * USB driver system settings.
  */
-#define STM32_USB_USE_OTG1                  FALSE
+#define STM32_USB_USE_OTG1                  TRUE
 #define STM32_USB_USE_OTG2                  FALSE
 #define STM32_USB_OTG1_IRQ_PRIORITY         14
 #define STM32_USB_OTG2_IRQ_PRIORITY         14

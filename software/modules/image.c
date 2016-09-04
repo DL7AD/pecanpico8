@@ -12,7 +12,6 @@
 #include <string.h>
 #include "types.h"
 #include "sleep.h"
-#include "sd.h"
 
 static uint32_t gimage_id;
 mutex_t camera_mtx;
@@ -138,9 +137,8 @@ THD_FUNCTION(moduleIMG, arg) {
 				chMtxLock(&interference_mtx);
 				TRACE_INFO("IMG  > Locked radio");
 
-				// Shutdown radios (to avoid interference)
-				radioShutdown(RADIO_2M);
-				radioShutdown(RADIO_70CM);
+				// Shutdown radio (to avoid interference)
+				radioShutdown();
 
 				uint8_t tries;
 				bool status = false;
@@ -190,12 +188,6 @@ THD_FUNCTION(moduleIMG, arg) {
 					// Get image
 					image_len = OV2640_getBuffer(&image);
 					TRACE_INFO("IMG  > Image size: %d bytes", image_len);
-
-					// Write image to SD card
-					TRACE_INFO("IMG  > Write to SD card");
-					char filename[16];
-					chsnprintf(filename, sizeof(filename), "image%d.jpg", gimage_id);
-					writeBufferToFile(filename, image, image_len);
 
 				} else { // Camera error
 
