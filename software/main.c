@@ -52,6 +52,7 @@ static void led_cb(void *led_sw) {
   * Main routine is starting up system, runs the software watchdog (module monitoring), controls LEDs
   */
 int main(void) {
+
 	halInit();					// Startup HAL
 
 	// Ramp up to 2.8V
@@ -63,20 +64,18 @@ int main(void) {
 
 
 
-
-
-  sduObjectInit(&SDU1);
-  sduStart(&SDU1, &serusbcfg);
+  /*sduObjectInit(&SDU1);
+  sduStart(&SDU1, &serusbcfg);*/
 
   /*
    * Activates the USB driver and then the USB bus pull-up on D+.
    * Note, a delay is inserted in order to not have to disconnect the cable
    * after a reset.
    */
-  usbDisconnectBus(serusbcfg.usbp);
+  /*usbDisconnectBus(serusbcfg.usbp);
   chThdSleepMilliseconds(3000);
   usbStart(serusbcfg.usbp, &usbcfg);
-  usbConnectBus(serusbcfg.usbp);
+  usbConnectBus(serusbcfg.usbp);*/
 
 
 
@@ -89,8 +88,8 @@ int main(void) {
 
 	// Initialize Watchdog
 	TRACE_INFO("MAIN > Initialize Watchdog");
-	wdgStart(&WDGD1, &wdgcfg);
-	wdgReset(&WDGD1);
+	//wdgStart(&WDGD1, &wdgcfg);
+	//wdgReset(&WDGD1);
 
 	pi2cInit();					// Startup I2C
 	initEssentialModules();		// Startup required modules (input/output modules)

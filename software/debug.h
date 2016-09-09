@@ -23,7 +23,7 @@ extern const SerialConfig uart_config;
 	\
 	sdStart(&SD3, &uart_config); \
 	palSetPadMode(PORT(IO_TXD), PIN(IO_TXD), PAL_MODE_ALTERNATE(7)); \
-	palSetPadMode(PORT(IO_RXD), PIN(IO_RXD), PAL_MODE_ALTERNATE(7)); \
+	/*palSetPadMode(PORT(IO_RXD), PIN(IO_RXD), PAL_MODE_ALTERNATE(7));*/ \
 	chMtxObjectInit(&trace_mtx); \
 	chMtxLock(&trace_mtx); \
 	chprintf((BaseSequentialStream*)&SD3, "\r\n"); \

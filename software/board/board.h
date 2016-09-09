@@ -57,7 +57,7 @@
 
 // IO
 #define IO_TXD                      (GPIOB, 10U)
-#define IO_RXD                      (GPIOB, 11U)
+// #define IO_RXD                      (GPIOB, 11U) // used for CAM_EN on Pecan Pico 8a
 #define IO_LED1                     (GPIOB, 1U)
 #define IO_LED2                     (GPIOB, 0U)
 #define IO_LED3                     (GPIOE, 8U)
@@ -93,7 +93,7 @@
 #define CAM_D7                      (GPIOB, 6U)
 #define CAM_D8                      (GPIOE, 5U)
 #define CAM_D9                      (GPIOE, 6U)
-#define CAM_EN                      (GPIOB, 1U)
+#define CAM_EN                      (GPIOB, 11U)
 #define CAM_RESET                   (GPIOA, 3U)
 
 // Radio pins
@@ -131,7 +131,7 @@
 // Hardware definitions (which cant be changed easily)
 #define RADIO_MIN_FREQ				144000000	/* Min. Frequency range of radio */
 #define RADIO_MAX_FREQ				148000000	/* Min. Frequency range of radio */
-#define OSC_FREQ				    25999500U	/* Oscillator frequency */
+#define OSC_FREQ				    26000500U	/* Oscillator frequency */
 
 
 
@@ -166,7 +166,7 @@
 #define GPIOB_I2C_SCL                  8U
 #define GPIOB_I2C_SDA                  9U
 #define GPIOB_IO_TXD               10U
-#define GPIOB_IO_RXD               11U
+#define GPIOB_CAM_EN               11U
 #define GPIOB_PAC_ALERT                 12U
 #define GPIOB_SPI_SCK               13U
 #define GPIOB_SPI_MISO              14U
@@ -517,7 +517,7 @@
                                      PIN_MODE_ALTERNATE(GPIOB_I2C_SCL) |    \
                                      PIN_MODE_ALTERNATE(GPIOB_I2C_SDA) |    \
                                      PIN_MODE_ALTERNATE(GPIOB_IO_TXD) |    \
-                                     PIN_MODE_ALTERNATE(GPIOB_IO_RXD) |    \
+                                     PIN_MODE_OUTPUT(GPIOB_CAM_EN) |    \
                                      PIN_MODE_INPUT(GPIOB_PAC_ALERT) |    \
                                      PIN_MODE_ALTERNATE(GPIOB_SPI_SCK) |    \
                                      PIN_MODE_ALTERNATE(GPIOB_SPI_MISO) |   \
@@ -533,7 +533,7 @@
                                      PIN_OTYPE_OPENDRAIN(GPIOB_I2C_SCL) |   \
                                      PIN_OTYPE_OPENDRAIN(GPIOB_I2C_SDA) |   \
                                      PIN_OTYPE_PUSHPULL(GPIOB_IO_TXD) |   \
-                                     PIN_OTYPE_PUSHPULL(GPIOB_IO_RXD) |   \
+                                     PIN_OTYPE_PUSHPULL(GPIOB_CAM_EN) |   \
                                      PIN_OTYPE_PUSHPULL(GPIOB_PAC_ALERT) | \
                                      PIN_OTYPE_PUSHPULL(GPIOB_SPI_SCK) |    \
                                      PIN_OTYPE_PUSHPULL(GPIOB_SPI_MISO) |   \
@@ -549,7 +549,7 @@
                                      PIN_OSPEED_LOW(GPIOB_I2C_SCL) |       \
                                      PIN_OSPEED_LOW(GPIOB_I2C_SDA) |       \
                                      PIN_OSPEED_HIGH(GPIOB_IO_TXD) |       \
-                                     PIN_OSPEED_HIGH(GPIOB_IO_RXD) |       \
+                                     PIN_OSPEED_VERYLOW(GPIOB_CAM_EN) |       \
                                      PIN_OSPEED_VERYLOW(GPIOB_PAC_ALERT) | \
                                      PIN_OSPEED_HIGH(GPIOB_SPI_SCK) |       \
                                      PIN_OSPEED_HIGH(GPIOB_SPI_MISO) |      \
@@ -565,7 +565,7 @@
                                      PIN_PUPDR_FLOATING(GPIOB_I2C_SCL) |    \
                                      PIN_PUPDR_FLOATING(GPIOB_I2C_SDA) |    \
                                      PIN_PUPDR_PULLUP(GPIOB_IO_TXD) |    \
-                                     PIN_PUPDR_PULLUP(GPIOB_IO_RXD) |    \
+                                     PIN_PUPDR_PULLDOWN(GPIOB_CAM_EN) |    \
                                      PIN_PUPDR_PULLUP(GPIOB_PAC_ALERT) |   \
                                      PIN_PUPDR_PULLUP(GPIOB_SPI_SCK) |      \
                                      PIN_PUPDR_PULLUP(GPIOB_SPI_MISO) |     \
@@ -581,7 +581,7 @@
                                      PIN_ODR_HIGH(GPIOB_I2C_SCL) |          \
                                      PIN_ODR_HIGH(GPIOB_I2C_SDA) |          \
                                      PIN_ODR_HIGH(GPIOB_IO_TXD) |          \
-                                     PIN_ODR_HIGH(GPIOB_IO_RXD) |          \
+                                     PIN_ODR_HIGH(GPIOB_CAM_EN) |          \
                                      PIN_ODR_HIGH(GPIOB_PAC_ALERT) |       \
                                      PIN_ODR_HIGH(GPIOB_SPI_SCK) |          \
                                      PIN_ODR_HIGH(GPIOB_SPI_MISO) |         \
@@ -597,7 +597,7 @@
 #define VAL_GPIOB_AFRH              (PIN_AFIO_AF(GPIOB_I2C_SCL, 4) |        \
                                      PIN_AFIO_AF(GPIOB_I2C_SDA, 4) |        \
                                      PIN_AFIO_AF(GPIOB_IO_TXD, 7) |        \
-                                     PIN_AFIO_AF(GPIOB_IO_RXD, 7) |        \
+                                     PIN_AFIO_AF(GPIOB_CAM_EN, 0) |        \
                                      PIN_AFIO_AF(GPIOB_PAC_ALERT, 0) |     \
                                      PIN_AFIO_AF(GPIOB_SPI_SCK, 5) |        \
                                      PIN_AFIO_AF(GPIOB_SPI_MISO, 5) |       \
@@ -1025,7 +1025,7 @@
 #define VAL_GPIOF_PUPDR             (PIN_PUPDR_PULLUP(GPIOF_PIN0) |         \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN1) |         \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN2) |         \
-                                     PIN_PUPDR_PULLUP(GPIOF_GPS_EN) |         \
+                                     PIN_PUPDR_PULLDOWN(GPIOF_GPS_EN) |         \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN4) |         \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN5) |         \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN6) |         \

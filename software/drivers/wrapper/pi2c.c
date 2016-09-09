@@ -30,13 +30,13 @@ bool i2cSendDriver(I2CDriver *driver, uint8_t addr, uint8_t *txbuf, uint32_t txb
 
 bool I2C_send(uint8_t addr, uint8_t *txbuf, uint32_t txbytes, uint8_t *rxbuf, uint32_t rxbytes, systime_t timeout)
 {
-	return i2cSendDriver(&I2CD2, addr, txbuf, txbytes, rxbuf, rxbytes, timeout);
+	return i2cSendDriver(&I2CD1, addr, txbuf, txbytes, rxbuf, rxbytes, timeout);
 }
 
 void pi2cInit(void)
 {
 	TRACE_INFO("I2C  > Initialize I2C");
-	i2cStart(&I2CD2, &_i2cfg);
+	i2cStart(&I2CD1, &_i2cfg);
 	chMtxObjectInit(&pi2c_mtx);
 }
 
