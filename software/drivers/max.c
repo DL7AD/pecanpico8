@@ -10,6 +10,15 @@
 #include "config.h"
 #include "defines.h"
 
+// Serial driver configuration for GPS
+const SerialConfig gps_config =
+{
+	9600,	// baud rate
+	0,		// CR1 register
+	0,		// CR2 register
+	0		// CR3 register
+};
+
 /* 
  * gps_transmit_string
  *
@@ -17,25 +26,7 @@
  */
 void gps_transmit_string(uint8_t *cmd, uint8_t length)
 {
-	I2C_writeN(UBLOX_MAX_ADDRESS, cmd, length);
-}
-
-uint8_t gps_receive_byte(void)
-{
-	uint8_t val;
-	if(I2C_read8(UBLOX_MAX_ADDRESS, 0xFF, &val))
-		return val;
-	else
-		return 0x00;
-}
-
-uint16_t gps_bytes_avail(void)
-{
-	uint16_t val;
-	if(I2C_read16(UBLOX_MAX_ADDRESS, 0xFD, &val))
-		return val;
-	else
-		return 0x00;
+	sdWrite(&SD5, cmd, length);
 }
 
 /* 
@@ -62,11 +53,7 @@ uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id, uint16_t timeout) {
 	while(chVTGetSystemTimeX() <= sTimeout) {
 
 		// Receive one byte
-		if(!gps_bytes_avail()) { // No byte available
-			chThdSleepMilliseconds(100);
-			continue;
-		}
-		rx_byte = gps_receive_byte();
+		rx_byte = sdGetTimeout(&SD5, sTimeout - chVTGetSystemTimeX());
 
 		// Process one byte
 		if (rx_byte == ack[match_count] || rx_byte == nak[match_count]) {
@@ -104,21 +91,12 @@ uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *pa
 	enum {UBX_A, UBX_B, CLASSID, MSGID, LEN_A, LEN_B, PAYLOAD} state = UBX_A;
 	uint16_t payload_cnt = 0;
 	uint16_t payload_len = 0;
-	uint16_t bytes_avail = 0;
 
 	systime_t sTimeout = chVTGetSystemTimeX() + MS2ST(timeout);
 	while(chVTGetSystemTimeX() <= sTimeout) {
 
 		// Receive one byte
-		if(!bytes_avail)
-			bytes_avail = gps_bytes_avail();
-		if(!bytes_avail) {
-			chThdSleepMilliseconds(50);
-			continue;
-		}
-		
-		rx_byte = gps_receive_byte();
-		bytes_avail--;
+		rx_byte = sdGetTimeout(&SD5, sTimeout - chVTGetSystemTimeX());
 
 		// Process one byte
 		switch (state) {
@@ -246,29 +224,6 @@ uint8_t gps_disable_nmea_output(void) {
 }
 
 /*
- * gps_set_gps_only
- *
- * tells the uBlox to only use the GPS satellites
- *
- * returns if ACKed by GPS
- *
- */
-uint8_t gps_set_gps_only(void) {
-	uint8_t gpsonly[] = {
-		0xB5, 0x62, 0x06, 0x3E, 36, 0x00,			// UBX-CFG-GNSS
-		0x00, 32, 32, 4,							// use 32 channels, 4 configs following
-		0x00, 16, 32, 0, 0x01, 0x00, 0x00, 0x00,	// GPS enable, all channels
-		0x03, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		// BeiDou disable, 0 channels
-		0x05, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		// QZSS disable, 0 channels
-		0x06, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		// GLONASS disable, 0 channels
-		0xeb, 0x72									// checksum
-	};
-
-	gps_transmit_string(gpsonly, sizeof(gpsonly));
-	return gps_receive_ack(0x06, 0x3E, 1000);
-}
-
-/*
  * gps_set_airborne_model
  *
  * tells the GPS to use the airborne positioning model. Should be used to
@@ -358,31 +313,18 @@ uint8_t gps_power_save(int on) {
 	return gps_receive_ack(0x06, 0x11, 1000);
 }
 
-/*
- * gps_save_settings
- *
- * saves the GPS settings to flash. should be done when power save is disabled and all
- * settings are configured. 
- */
-/*uint8_t gps_save_settings(void) {
-	uint8_t cfg[] = {
-		0xB5, 0x62, 0x06, 0x09, 12, 0,	// UBX-CFG-CFG
-		0x00, 0x00, 0x00, 0x00,			// clear no sections
-		0x1f, 0x1e, 0x00, 0x00,			// save all sections
-		0x00, 0x00, 0x00, 0x00,			// load no sections
-		0x58, 0x59
-	};
-
-	gps_transmit_string(cfg, sizeof(cfg));
-	return gps_receive_ack(0x06, 0x09, 1000);
-}*/
-
 bool GPS_Init(void) {
 	// Initialize pins
 	TRACE_INFO("GPS  > Init pins");
 	palSetPadMode(PORT(GPS_RESET), PIN(GPS_RESET), PAL_MODE_OUTPUT_PUSHPULL);	// GPS reset
 	palSetPadMode(PORT(GPS_EN), PIN(GPS_EN), PAL_MODE_OUTPUT_PUSHPULL);			// GPS off
 	palSetPadMode(PORT(GPS_TIMEPULSE), PIN(GPS_TIMEPULSE), PAL_MODE_INPUT);		// GPS timepulse
+	palSetPadMode(PORT(GPS_RXD), PIN(GPS_RXD), PAL_MODE_ALTERNATE(8));			// UART RXD
+	palSetPadMode(PORT(GPS_TXD), PIN(GPS_TXD), PAL_MODE_ALTERNATE(8));			// UART TXD
+
+	// Init UART
+	TRACE_INFO("GPS  > Init GPS UART");
+	sdStart(&SD5, &gps_config);
 
 	// Switch MOSFET
 	TRACE_INFO("GPS  > Switch on");
@@ -402,16 +344,6 @@ bool GPS_Init(void) {
 		TRACE_ERROR("GPS  > Disable NMEA output FAILED");
 		status = 0;
 	}
-
-	// EVA7M does not support anything else than GPS
-	#if 0
-	if(gps_set_gps_only()) {
-		TRACE_INFO("GPS  > Set GPS only OK");
-	} else {
-		TRACE_ERROR("GPS  > Set GPS only FAILED");
-		status = 0;
-	}
-	#endif
 
 	if(gps_set_airborne_model()) {
 		TRACE_INFO("GPS  > Set airborne model OK");

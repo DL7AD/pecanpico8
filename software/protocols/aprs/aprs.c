@@ -136,18 +136,15 @@ uint32_t aprs_encode_position(uint8_t* message, mod_t mod, const aprs_config_t *
 	// Telemetry parameter
 	for(uint8_t i=0; i<5; i++) {
 		switch(config->tel[i]) {
-			case TEL_SATS:		t = trackPoint->gps_sats;			break;
-			case TEL_TTFF:		t = trackPoint->gps_ttff;			break;
-			case TEL_VBAT:		t = trackPoint->adc_battery;		break;
-			case TEL_VSOL:		t = trackPoint->adc_solar;			break;
-			case TEL_CHARGE:	t = trackPoint->adc_charge;			break;
-			case TEL_DISCHARGE:	t = trackPoint->adc_discharge;		break;
-			case TEL_IHUM:		t = trackPoint->int_hum;			break;
-			case TEL_EHUM:		t = trackPoint->ext_hum;			break;
-			case TEL_IPRESS:	t = trackPoint->int_press/125 - 40;	break;
-			case TEL_EPRESS:	t = trackPoint->ext_press/125 - 40;	break;
-			case TEL_ITEMP:		t = trackPoint->int_temp/10 + 1000;	break;
-			case TEL_ETEMP:		t = trackPoint->ext_temp/10 + 1000;	break;
+			case TEL_SATS:	t = trackPoint->gps_sats;			break;
+			case TEL_TTFF:	t = trackPoint->gps_ttff;			break;
+			case TEL_VBAT:	t = trackPoint->adc_vbat;			break;
+			case TEL_VSOL:	t = trackPoint->adc_vsol;			break;
+			case TEL_PBAT:	t = trackPoint->adc_pbat;			break;
+			case TEL_PSOL:	t = trackPoint->adc_psol;			break;
+			case TEL_HUM:	t = trackPoint->air_hum;			break;
+			case TEL_PRESS:	t = trackPoint->air_press/125 - 40;	break;
+			case TEL_TEMP:	t = trackPoint->air_temp/10 + 1000;	break;
 		}
 
 		temp[0] = t/91 + 33;
@@ -258,18 +255,15 @@ uint32_t aprs_encode_telemetry_configuration(uint8_t* message, mod_t mod, const 
 
 			for(uint8_t i=0; i<5; i++) {
 				switch(config->tel[i]) {
-					case TEL_SATS:		ax25_send_string(&packet, "Sats");				break;
-					case TEL_TTFF:		ax25_send_string(&packet, "TTFF");				break;
-					case TEL_VBAT:		ax25_send_string(&packet, "Battery");			break;
-					case TEL_VSOL:		ax25_send_string(&packet, "Solar");				break;
-					case TEL_CHARGE:	ax25_send_string(&packet, "Charge");			break;
-					case TEL_DISCHARGE:	ax25_send_string(&packet, "Discharge");			break;
-					case TEL_IHUM:		ax25_send_string(&packet, "Humidity int");		break;
-					case TEL_EHUM:		ax25_send_string(&packet, "Humidity ext");		break;
-					case TEL_IPRESS:	ax25_send_string(&packet, "Airpressure int");	break;
-					case TEL_EPRESS:	ax25_send_string(&packet, "Airpressure ext");	break;
-					case TEL_ITEMP:		ax25_send_string(&packet, "Temperature int");	break;
-					case TEL_ETEMP:		ax25_send_string(&packet, "Temperature ext");	break;
+					case TEL_SATS:		ax25_send_string(&packet, "Sats");			break;
+					case TEL_TTFF:		ax25_send_string(&packet, "TTFF");			break;
+					case TEL_VBAT:		ax25_send_string(&packet, "Vbat");			break;
+					case TEL_VSOL:		ax25_send_string(&packet, "Vsol");			break;
+					case TEL_PBAT:		ax25_send_string(&packet, "Pbat");			break;
+					case TEL_PSOL:		ax25_send_string(&packet, "Psol");			break;
+					case TEL_HUM:		ax25_send_string(&packet, "Humidity");		break;
+					case TEL_PRESS:		ax25_send_string(&packet, "Airpressure");	break;
+					case TEL_TEMP:		ax25_send_string(&packet, "Temperature");	break;
 				}
 				if(i < 4)
 					ax25_send_string(&packet, ",");
@@ -295,23 +289,20 @@ uint32_t aprs_encode_telemetry_configuration(uint8_t* message, mod_t mod, const 
 						ax25_send_string(&packet, "V");
 						break;
 
-					case TEL_CHARGE:
-					case TEL_DISCHARGE:
+					case TEL_PBAT:
+					case TEL_PSOL:
 						ax25_send_string(&packet, "W");
 						break;
 
-					case TEL_IHUM:
-					case TEL_EHUM:
+					case TEL_HUM:
 						ax25_send_string(&packet, "%");
 						break;
 
-					case TEL_IPRESS:
-					case TEL_EPRESS:
+					case TEL_PRESS:
 						ax25_send_string(&packet, "Pa");
 						break;
 						
-					case TEL_ITEMP:
-					case TEL_ETEMP:
+					case TEL_TEMP:
 						ax25_send_string(&packet, "degC");
 						break;
 				}
@@ -332,25 +323,22 @@ uint32_t aprs_encode_telemetry_configuration(uint8_t* message, mod_t mod, const 
 						ax25_send_string(&packet, "0,1,0");
 						break;
 
-					case TEL_CHARGE:
-					case TEL_DISCHARGE:
+					case TEL_PBAT:
+					case TEL_PSOL:
 					case TEL_VBAT:
 					case TEL_VSOL:
 						ax25_send_string(&packet, "0,.001,0");
 						break;
 
-					case TEL_IHUM:
-					case TEL_EHUM:
+					case TEL_HUM:
 						ax25_send_string(&packet, "0,.1,0");
 						break;
 
-					case TEL_IPRESS:
-					case TEL_EPRESS:
+					case TEL_PRESS:
 						ax25_send_string(&packet, "0,12.5,500");
 						break;
 						
-					case TEL_ITEMP:
-					case TEL_ETEMP:
+					case TEL_TEMP:
 						ax25_send_string(&packet, "0,.1,-100");
 						break;
 				}

@@ -16,55 +16,61 @@
 #define FSV (40 - 40 / (DEMO))
 #define FSC ((FSR) / (PAC1720_RSENSE))
 
-static int32_t pac1720_charge;
-static int32_t pac1720_discharge;
-static int32_t pac1720_charge_counter;
-static int32_t pac1720_discharge_counter;
+static int32_t pac1720_psol;
+static int32_t pac1720_pbat;
+static int32_t pac1720_psol_counter;
+static int32_t pac1720_pbat_counter;
 
-int16_t pac1720_getPowerDischarge(void) {
+int16_t pac1720_getPbat(void) {
 	int32_t fsp = FSV * FSC;
-	uint16_t val;
-	if(I2C_read16(PAC1720_ADDRESS, PAC1720_CH2_PWR_RAT_HIGH, &val))
-		return val * fsp / 65536;
-	else
+	int16_t val;
+	uint8_t sign;
+	if(I2C_read16(PAC1720_ADDRESS, PAC1720_CH2_PWR_RAT_HIGH, (uint16_t*)&val)) {
+		I2C_read8(PAC1720_ADDRESS, PAC1720_CH2_VSENSE_HIGH, &sign);
+		return (sign >> 7 ? 1 : -1) * (val * fsp / 65536);
+	} else {
 		return 0; // PAC1720 not available (maybe Vcc too low)
+	}
 }
 
-int16_t pac1720_getPowerCharge(void) {
+int16_t pac1720_getPsol(void) {
 	int32_t fsp = FSV * FSC;
-	uint16_t val;
-	if(I2C_read16(PAC1720_ADDRESS, PAC1720_CH1_PWR_RAT_HIGH, &val))
-		return val * fsp / 65536;
-	else
+	int16_t val;
+	uint8_t sign;
+	if(I2C_read16(PAC1720_ADDRESS, PAC1720_CH1_PWR_RAT_HIGH, (uint16_t*)&val)) {
+		I2C_read8(PAC1720_ADDRESS, PAC1720_CH1_VSENSE_HIGH, &sign);
+		return (sign >> 7 ? 1 : -1) * (val * fsp / 65536);
+	} else {
 		return 0; // PAC1720 not available (maybe Vcc too low)
+	}
 }
 
-int16_t pac1720_getAverageChargePower(void) {
+int16_t pac1720_getAvgPsol(void) {
 	// Return current value if time interval too short
-	if(!pac1720_charge_counter)
-		pac1720_getPowerCharge();
+	if(!pac1720_psol_counter)
+		pac1720_getPsol();
 
 	// Calculate average power
-	int16_t ret = pac1720_charge / pac1720_charge_counter;
+	int16_t ret = pac1720_psol / pac1720_psol_counter;
 
 	// Reset current measurement
-	pac1720_charge = 0;
-	pac1720_charge_counter = 0;
+	pac1720_psol = 0;
+	pac1720_psol_counter = 0;
 
 	return ret;
 }
 
-int16_t pac1720_getAverageDischargePower(void) {
+int16_t pac1720_getAvgPbat(void) {
 	// Return current value if time interval too short
-	if(!pac1720_discharge_counter)
-		pac1720_getPowerDischarge();
+	if(!pac1720_pbat_counter)
+		pac1720_getPbat();
 
 	// Calculate average power
-	int16_t ret = pac1720_discharge / pac1720_discharge_counter;
+	int16_t ret = pac1720_pbat / pac1720_pbat_counter;
 
 	// Reset current measurement
-	pac1720_discharge = 0;
-	pac1720_discharge_counter = 0;
+	pac1720_pbat = 0;
+	pac1720_pbat_counter = 0;
 
 	return ret;
 }
@@ -92,10 +98,10 @@ THD_FUNCTION(pac1720_thd, arg)
 
 	while(true)
 	{
-		pac1720_charge += pac1720_getPowerCharge();
-		pac1720_discharge += pac1720_getPowerDischarge();
-		pac1720_charge_counter++;
-		pac1720_discharge_counter++;
+		pac1720_psol += pac1720_getPsol();
+		pac1720_pbat += pac1720_getPbat();
+		pac1720_psol_counter++;
+		pac1720_pbat_counter++;
 
 		chThdSleepMilliseconds(100);
 	}

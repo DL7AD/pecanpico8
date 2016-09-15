@@ -30,7 +30,6 @@ bool p_sleep(const sleep_config_t *config)
 		case SLEEP_WHEN_INSIDE_ITU1:
 		case SLEEP_WHEN_INSIDE_ITU2:
 		case SLEEP_WHEN_INSIDE_ITU3:
-		case SLEEP_WHEN_SAT_NOT_VIS:
 			TRACE_WARN("Sleeping method not implemented");
 			return false;
 

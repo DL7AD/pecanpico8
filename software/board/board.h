@@ -867,7 +867,7 @@
                                      PIN_MODE_INPUT(GPIOE_PIN7) |        \
                                      PIN_MODE_OUTPUT(GPIOE_IO_LED3) |           \
                                      PIN_MODE_INPUT(GPIOE_PIN9) |           \
-                                     PIN_MODE_OUTPUT(GPIOE_SOL_SHORT_EN) |  \
+                                     PIN_MODE_INPUT(GPIOE_SOL_SHORT_EN) |  \
                                      PIN_MODE_INPUT(GPIOE_PIN11) |          \
                                      PIN_MODE_INPUT(GPIOE_PIN12) |     \
                                      PIN_MODE_INPUT(GPIOE_PIN13) |  \
@@ -915,7 +915,7 @@
                                      PIN_PUPDR_PULLUP(GPIOE_PIN7) |       \
                                      PIN_PUPDR_PULLUP(GPIOE_IO_LED3) |         \
                                      PIN_PUPDR_PULLUP(GPIOE_PIN9) |         \
-                                     PIN_PUPDR_PULLUP(GPIOE_SOL_SHORT_EN) |\
+                                     PIN_PUPDR_FLOATING(GPIOE_SOL_SHORT_EN) |\
                                      PIN_PUPDR_PULLUP(GPIOE_PIN11) |        \
                                      PIN_PUPDR_PULLUP(GPIOE_PIN12) |    \
                                      PIN_PUPDR_PULLUP(GPIOE_PIN13) | \
@@ -1033,7 +1033,7 @@
                                      PIN_PUPDR_PULLUP(GPIOF_PIN8) |         \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN9) |         \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN10) |        \
-                                     PIN_PUPDR_PULLUP(GPIOF_VBOOST) |        \
+                                     PIN_PUPDR_FLOATING(GPIOF_VBOOST) |        \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN12) |        \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN13) |        \
                                      PIN_PUPDR_PULLUP(GPIOF_PIN14) |        \

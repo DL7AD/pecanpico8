@@ -131,38 +131,25 @@ THD_FUNCTION(moduleTRACKING, arg) {
 	}
 
 	// Voltage/Current
-	lastTrackPoint->adc_solar = getSolarVoltageMV();
-	lastTrackPoint->adc_battery = getBatteryVoltageMV();
-	lastTrackPoint->adc_charge = pac1720_getPowerCharge();
-	lastTrackPoint->adc_discharge = pac1720_getPowerDischarge();
+	lastTrackPoint->adc_vsol = getSolarVoltageMV();
+	lastTrackPoint->adc_vbat = getBatteryVoltageMV();
+	lastTrackPoint->adc_vusb = getUSBVoltageMV();
+	lastTrackPoint->adc_psol = pac1720_getPsol();
+	lastTrackPoint->adc_pbat = pac1720_getPbat();
 
-	bme280_t bmeInt;
-	bme280_t bmeExt;
+	bme280_t bme280;
 
 	// Atmosphere condition
 	if(BME280_isAvailable(BME280_ADDRESS_INT)) {
-		BME280_Init(&bmeInt, BME280_ADDRESS_INT);
-		lastTrackPoint->int_press = BME280_getPressure(&bmeInt, 256);
-		lastTrackPoint->int_hum = BME280_getHumidity(&bmeInt);
-		lastTrackPoint->int_temp = BME280_getTemperature(&bmeInt);
+		BME280_Init(&bme280, BME280_ADDRESS_INT);
+		lastTrackPoint->air_press = BME280_getPressure(&bme280, 256);
+		lastTrackPoint->air_hum = BME280_getHumidity(&bme280);
+		lastTrackPoint->air_temp = BME280_getTemperature(&bme280);
 	} else { // No internal BME280 found
 		TRACE_ERROR("TRAC > Internal BME280 not available");
-		lastTrackPoint->int_press = 0;
-		lastTrackPoint->int_hum = 0;
-		lastTrackPoint->int_temp = 0;
-	}
-
-	// External BME280
-	if(BME280_isAvailable(BME280_ADDRESS_EXT)) {
-		BME280_Init(&bmeExt, BME280_ADDRESS_EXT);
-		lastTrackPoint->ext_press = BME280_getPressure(&bmeExt, 256);
-		lastTrackPoint->ext_hum = BME280_getHumidity(&bmeExt);
-		lastTrackPoint->ext_temp = BME280_getTemperature(&bmeExt);
-	} else { // No external BME280 found
-		TRACE_WARN("TRAC > External BME280 not available");
-		lastTrackPoint->ext_press = 0;
-		lastTrackPoint->ext_hum = 0;
-		lastTrackPoint->ext_temp = 0;
+		lastTrackPoint->air_press = 0;
+		lastTrackPoint->air_hum = 0;
+		lastTrackPoint->air_temp = 0;
 	}
 
 	systime_t time = chVTGetSystemTimeX();
@@ -251,38 +238,25 @@ THD_FUNCTION(moduleTRACKING, arg) {
 		tp->gps_ttff = ST2S(chVTGetSystemTimeX() - time); // Time to first fix
 
 		// Power management
-		tp->adc_solar = getSolarVoltageMV();
-		tp->adc_battery = getBatteryVoltageMV();
-		tp->adc_charge = pac1720_getAverageChargePower();
-		tp->adc_discharge = pac1720_getAverageDischargePower();
+		tp->adc_vsol = getSolarVoltageMV();
+		tp->adc_vbat = getBatteryVoltageMV();
+		tp->adc_vusb = getUSBVoltageMV();
+		tp->adc_psol = pac1720_getAvgPsol();
+		tp->adc_pbat = pac1720_getAvgPbat();
 
-		bme280_t bmeInt;
-		bme280_t bmeExt;
+		bme280_t bme280;
 
 		// Atmosphere condition
 		if(BME280_isAvailable(BME280_ADDRESS_INT)) {
-			BME280_Init(&bmeInt, BME280_ADDRESS_INT);
-			tp->int_press = BME280_getPressure(&bmeInt, 256);
-			tp->int_hum = BME280_getHumidity(&bmeInt);
-			tp->int_temp = BME280_getTemperature(&bmeInt);
+			BME280_Init(&bme280, BME280_ADDRESS_INT);
+			tp->air_press = BME280_getPressure(&bme280, 256);
+			tp->air_hum = BME280_getHumidity(&bme280);
+			tp->air_temp = BME280_getTemperature(&bme280);
 		} else { // No internal BME280 found
 			TRACE_ERROR("TRAC > Internal BME280 not available");
-			tp->int_press = 0;
-			tp->int_hum = 0;
-			tp->int_temp = 0;
-		}
-
-		// External BME280
-		if(BME280_isAvailable(BME280_ADDRESS_EXT)) {
-			BME280_Init(&bmeExt, BME280_ADDRESS_EXT);
-			tp->ext_press = BME280_getPressure(&bmeExt, 256);
-			tp->ext_hum = BME280_getHumidity(&bmeExt);
-			tp->ext_temp = BME280_getTemperature(&bmeExt);
-		} else { // No external BME280 found
-			TRACE_WARN("TRAC > External BME280 not available");
-			tp->ext_press = 0;
-			tp->ext_hum = 0;
-			tp->ext_temp = 0;
+			tp->air_press = 0;
+			tp->air_hum = 0;
+			tp->air_temp = 0;
 		}
 
 		// Trace data
@@ -290,16 +264,14 @@ THD_FUNCTION(moduleTRACKING, arg) {
 					"%s Time %04d-%02d-%02d %02d:%02d:%02d\r\n"
 					"%s Pos  %d.%07d %d.%07d Alt %dm\r\n"
 					"%s Sats %d  TTFF %dsec\r\n"
-					"%s ADC Vbat=%d.%03dV  Vsol=%d.%03dV Pin=%dmW Pout=%dmW\r\n"
-					"%s INT p=%6d.%01dPa T=%2d.%02ddegC phi=%2d.%01d%%\r\n"
-					"%s EXT p=%6d.%01dPa T=%2d.%02ddegC phi=%2d.%01d%%",
+					"%s ADC Vbat=%d.%03dV Vsol=%d.%03dV VUSB=%d.%03dV Pbat=%dmW Psol=%dmW\r\n"
+					"%s AIR p=%6d.%01dPa T=%2d.%02ddegC phi=%2d.%01d%%",
 					tp->id,
 					TRACE_TAB, tp->time.year, tp->time.month, tp->time.day, tp->time.hour, tp->time.minute, tp->time.day,
 					TRACE_TAB, tp->gps_lat/10000000, (tp->gps_lat > 0 ? 1:-1)*tp->gps_lat%10000000, tp->gps_lon/10000000, (tp->gps_lon > 0 ? 1:-1)*tp->gps_lon%10000000, tp->gps_alt,
 					TRACE_TAB, tp->gps_sats, tp->gps_ttff,
-					TRACE_TAB, tp->adc_battery/1000, (tp->adc_battery%1000), tp->adc_solar/1000, (tp->adc_solar%1000), tp->adc_charge, tp->adc_discharge,
-					TRACE_TAB, tp->int_press/10, tp->int_press%10, tp->int_temp/100, tp->int_temp%100, tp->int_hum/10, tp->int_hum%10,
-					TRACE_TAB, tp->ext_press/10, tp->ext_press%10, tp->ext_temp/100, tp->ext_temp%100, tp->ext_hum/10, tp->ext_hum%10
+					TRACE_TAB, tp->adc_vbat/1000, (tp->adc_vbat%1000), tp->adc_vsol/1000, (tp->adc_vsol%1000), tp->adc_vusb/1000, (tp->adc_vusb%1000), tp->adc_pbat, tp->adc_psol,
+					TRACE_TAB, tp->air_press/10, tp->air_press%10, tp->air_temp/100, tp->air_temp%100, tp->air_hum/10, tp->air_hum%10
 		);
 
 		// Append logging (timeout)

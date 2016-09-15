@@ -6,6 +6,7 @@
 #include "si4464.h"
 #include "geofence.h"
 #include "pi2c.h"
+#include "padc.h"
 #include <string.h>
 
 #define PLAYBACK_RATE		129000									/* Samples per second (SYSCLK = 45MHz) */
@@ -322,6 +323,11 @@ bool transmitOnRadio(radioMSG_t *msg) {
 					msg->freq/1000000, (msg->freq%1000000)/1000, msg->power,
 					dBm2powerLvl(msg->power), VAL2MOULATION(msg->mod), msg->bin_len
 		);
+
+		#if RADIO_BOOST
+		// Switch voltage to 3.2V for transmission (increases output power by ~6dB)
+		boost_voltage(HIGH);
+		#endif
 		
 		switch(msg->mod) {
 			case MOD_2FSK:
@@ -348,6 +354,12 @@ bool transmitOnRadio(radioMSG_t *msg) {
 		}
 
 		radioShutdown(); // Shutdown radio for reinitialization
+
+		#if RADIO_BOOST
+		// Switch voltage back to 1.85V
+		boost_voltage(LOW);
+		#endif
+
 		chMtxUnlock(&interference_mtx); // Heavy interference finished (HF)
 
 	} else { // Error

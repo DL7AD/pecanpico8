@@ -54,15 +54,7 @@ static void led_cb(void *led_sw) {
 int main(void) {
 
 	halInit();					// Startup HAL
-
-	// Ramp up to 2.8V
-	palClearPad(PORT(VBOOST), PIN(VBOOST));
-	palSetPadMode(PORT(VBOOST), PIN(VBOOST), PAL_MODE_OUTPUT_PUSHPULL);
-	palClearPad(PORT(VBOOST), PIN(VBOOST));
-
 	chSysInit();				// Startup RTOS
-
-
 
   /*sduObjectInit(&SDU1);
   sduStart(&SDU1, &serusbcfg);*/
@@ -78,18 +70,13 @@ int main(void) {
   usbConnectBus(serusbcfg.usbp);*/
 
 
-
-
-
-	//palSetPadMode(PORT(VBOOST), PIN(VBOOST), PAL_MODE_INPUT);
-
 	DEBUG_INIT();				// Debug Init (Serial debug port, LEDs)
 	TRACE_INFO("MAIN > Startup");
 
 	// Initialize Watchdog
 	TRACE_INFO("MAIN > Initialize Watchdog");
-	//wdgStart(&WDGD1, &wdgcfg);
-	//wdgReset(&WDGD1);
+	wdgStart(&WDGD1, &wdgcfg);
+	wdgReset(&WDGD1);
 
 	pi2cInit();					// Startup I2C
 	initEssentialModules();		// Startup required modules (input/output modules)
@@ -105,7 +92,7 @@ int main(void) {
 	chThdSleepMilliseconds(1000);
 
 	while(true) {
-		/*// Print time every 10 sec
+		// Print time every 10 sec
 		if(counter % 10 == 0)
 			PRINT_TIME("MAIN");
 
@@ -184,7 +171,7 @@ int main(void) {
 			wdgReset(&WDGD1);	// Reset hardware watchdog at no error
 		} else {
 			TRACE_ERROR("WDG  > No reset");
-		}*/
+		}
 
 		chThdSleepMilliseconds(1000);
 		counter++;

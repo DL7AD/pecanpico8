@@ -22,20 +22,16 @@ typedef struct {
 	uint8_t gps_ttff;		// Time to first fix in seconds
 
 	// Voltage and current measurement
-	uint16_t adc_solar;		// Current solar voltage in mV
-	uint16_t adc_battery;	// Current battery voltage in mV
-	int16_t adc_charge;		// Average charge power into battery in mW in last cycle
-	int16_t adc_discharge;	// Average discharge power from battery in mW in last cycle
+	uint16_t adc_vsol;		// Current solar voltage in mV
+	uint16_t adc_vbat;		// Current battery voltage in mV
+	uint16_t adc_vusb;		// Current USB voltage in mV
+	int16_t adc_pbat;		// Average battery current (since last track point)
+	int16_t adc_psol;		// Current solar shot current
 
-	// Internal BME280 (on board)
-	uint32_t int_press;		// Airpressure in Pa*10 (in 0.1Pa)
-	uint16_t int_hum;		// Rel. humidity in %*10 (in 0.1%)
-	int16_t int_temp;		// Temperature in degC*100 (in 0.01°C)
-
-	// External BME280 (off board)
-	uint32_t ext_press;		// Airpressure in Pa in balloon (in 0.1Pa)
-	uint16_t ext_hum;		// Rel. humidity in % in balloon (in 0.1%)
-	int16_t ext_temp;		// Temperature in K*100 in balloon (in 0.01°C)
+	// BME280 (on board)
+	uint32_t air_press;		// Airpressure in Pa*10 (in 0.1Pa)
+	uint16_t air_hum;		// Rel. humidity in %*10 (in 0.1%)
+	int16_t air_temp;		// Temperature in degC*100 (in 0.01°C)
 } trackPoint_t;
 
 typedef struct {

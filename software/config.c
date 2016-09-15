@@ -24,10 +24,10 @@ void initModules(void)
 	chsnprintf(config[0].aprs_config.path, 16, "WIDE1-1");	// APRS Path
 	config[0].aprs_config.preamble = 200;					// APRS Preamble
 	config[0].aprs_config.tel[0] = TEL_VBAT;				// APRS Telemetry parameter 1
-	config[0].aprs_config.tel[1] = TEL_IPRESS;				// APRS Telemetry parameter 2
-	config[0].aprs_config.tel[2] = TEL_ITEMP;				// APRS Telemetry parameter 3
-	config[0].aprs_config.tel[3] = TEL_IHUM;				// APRS Telemetry parameter 4
-	config[0].aprs_config.tel[4] = TEL_ETEMP;				// APRS Telemetry parameter 5
+	config[0].aprs_config.tel[1] = TEL_VSOL;				// APRS Telemetry parameter 2
+	config[0].aprs_config.tel[2] = TEL_PRESS;				// APRS Telemetry parameter 3
+	config[0].aprs_config.tel[3] = TEL_TEMP;				// APRS Telemetry parameter 4
+	config[0].aprs_config.tel[4] = TEL_HUM;					// APRS Telemetry parameter 5
 	config[0].aprs_config.tel_encoding = TRUE;				// Transmit Telemetry encoding information activated
 	config[0].aprs_config.tel_encoding_cycle = 3600;		// Transmit Telemetry encoding information every 3600sec
 	chsnprintf(config[0].aprs_config.tel_comment, 18, "http://tkrahn.net");// Telemetry comment
@@ -48,10 +48,10 @@ void initModules(void)
 	chsnprintf(config[1].aprs_config.path, 16, "WIDE1-1");	// APRS Path
 	config[1].aprs_config.preamble = 40;					// APRS Preamble
 	config[1].aprs_config.tel[0] = TEL_VBAT;				// APRS Telemetry parameter 1
-	config[1].aprs_config.tel[1] = TEL_IPRESS;				// APRS Telemetry parameter 2
-	config[1].aprs_config.tel[2] = TEL_ITEMP;				// APRS Telemetry parameter 3
-	config[1].aprs_config.tel[3] = TEL_IHUM;				// APRS Telemetry parameter 4
-	config[1].aprs_config.tel[4] = TEL_DISCHARGE;			// APRS Telemetry parameter 5
+	config[1].aprs_config.tel[1] = TEL_PRESS;				// APRS Telemetry parameter 2
+	config[1].aprs_config.tel[2] = TEL_TEMP;				// APRS Telemetry parameter 3
+	config[1].aprs_config.tel[3] = TEL_HUM;					// APRS Telemetry parameter 4
+	config[1].aprs_config.tel[4] = TEL_PBAT;				// APRS Telemetry parameter 5
 	config[1].aprs_config.tel_encoding = TRUE;				// Transmit Telemetry encoding information enabled
 	config[1].aprs_config.tel_encoding_cycle = 3600;		// Transmit Telemetry encoding information every 3600sec
 	chsnprintf(config[1].aprs_config.tel_comment, 18, "http://tkrahn.net");// Telemetry comment
@@ -72,7 +72,7 @@ void initModules(void)
 	config[2].fsk_config.baud = 600;						// Baudrate
 	config[2].fsk_config.shift = 1000;						// Frequency shift in Hz
 	chsnprintf(config[2].ukhas_config.callsign, 6, "DK0TU");// UKHAS Callsign
-	chsnprintf(config[2].ukhas_config.format, 94, "<CALL>,<ID>,<TIME>,<LAT>,<LON>,<ALT>,<SATS>,<TTFF>,<VBAT>,<DISCHARGE>,<IPRESS>,<ITEMP>,<IHUM>"); // UKHAS Format
+	chsnprintf(config[2].ukhas_config.format, 94, "<CALL>,<ID>,<TIME>,<LAT>,<LON>,<ALT>,<SATS>,<TTFF>,<VBAT>,<PBAT>,<PRESS>,<TEMP>,<HUM>"); // UKHAS Format
 	MODULE_POSITION(&config[2]);*/
 
 	// Module IMAGE, APRS 2m AFSK low-duty cycle
@@ -130,7 +130,7 @@ void initModules(void)
 	config[5].ssdv_config.ram_buffer = ssdv2_buffer;		// Camera buffer
 	config[5].ssdv_config.ram_size = sizeof(ssdv2_buffer);	// Buffer size
 	config[5].ssdv_config.res = RES_VGA;					// Resolution XGA
-	MODULE_IMAGE(&config[5]);
+	//MODULE_IMAGE(&config[5]);
 
 	// Module IMAGE, SSDV 2m 2FSK
 	/*chsnprintf(config[6].name, 12, "IMG 2FSK 2m");			// Instance name
