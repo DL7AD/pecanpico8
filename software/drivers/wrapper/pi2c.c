@@ -8,7 +8,7 @@
 
 const I2CConfig _i2cfg = {
 	OPMODE_I2C,
-	100000,
+	50000,
 	STD_DUTY_CYCLE,
 };
 

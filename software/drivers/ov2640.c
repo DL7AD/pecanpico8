@@ -742,19 +742,20 @@ void OV2640_DeinitDCMI(void)
   */
 void OV2640_InitGPIO(void)
 {
-	palSetPadMode(PORT(CAM_HREF), PIN(CAM_HREF), PAL_MODE_ALTERNATE(13));	// HSYNC -> PA4
-	palSetPadMode(PORT(CAM_PCLK), PIN(CAM_PCLK), PAL_MODE_ALTERNATE(13));	// PCLK  -> PA6
-	palSetPadMode(PORT(CAM_VSYNC), PIN(CAM_VSYNC), PAL_MODE_ALTERNATE(13));	// VSYNC -> PB7
-	palSetPadMode(PORT(CAM_D2), PIN(CAM_D2), PAL_MODE_ALTERNATE(13));		// D0    -> PC6
-	palSetPadMode(PORT(CAM_D3), PIN(CAM_D3), PAL_MODE_ALTERNATE(13));		// D1    -> PC7
-	palSetPadMode(PORT(CAM_D4), PIN(CAM_D4), PAL_MODE_ALTERNATE(13));		// D2    -> PC8
-	palSetPadMode(PORT(CAM_D5), PIN(CAM_D5), PAL_MODE_ALTERNATE(13));		// D3    -> PC9
-	palSetPadMode(PORT(CAM_D6), PIN(CAM_D6), PAL_MODE_ALTERNATE(13));		// D4    -> PE4
-	palSetPadMode(PORT(CAM_D7), PIN(CAM_D7), PAL_MODE_ALTERNATE(13));		// D5    -> PB6
-	palSetPadMode(PORT(CAM_D8), PIN(CAM_D8), PAL_MODE_ALTERNATE(13));		// D6    -> PE5
-	palSetPadMode(PORT(CAM_D9), PIN(CAM_D9), PAL_MODE_ALTERNATE(13));		// D7    -> PE6
+	palSetPadMode(PORT(CAM_HREF), PIN(CAM_HREF), PAL_MODE_ALTERNATE(13));		// HSYNC -> PA4
+	palSetPadMode(PORT(CAM_PCLK), PIN(CAM_PCLK), PAL_MODE_ALTERNATE(13));		// PCLK  -> PA6
+	palSetPadMode(PORT(CAM_VSYNC), PIN(CAM_VSYNC), PAL_MODE_ALTERNATE(13));		// VSYNC -> PB7
+	palSetPadMode(PORT(CAM_D2), PIN(CAM_D2), PAL_MODE_ALTERNATE(13));			// D0    -> PC6
+	palSetPadMode(PORT(CAM_D3), PIN(CAM_D3), PAL_MODE_ALTERNATE(13));			// D1    -> PC7
+	palSetPadMode(PORT(CAM_D4), PIN(CAM_D4), PAL_MODE_ALTERNATE(13));			// D2    -> PC8
+	palSetPadMode(PORT(CAM_D5), PIN(CAM_D5), PAL_MODE_ALTERNATE(13));			// D3    -> PC9
+	palSetPadMode(PORT(CAM_D6), PIN(CAM_D6), PAL_MODE_ALTERNATE(13));			// D4    -> PE4
+	palSetPadMode(PORT(CAM_D7), PIN(CAM_D7), PAL_MODE_ALTERNATE(13));			// D5    -> PB6
+	palSetPadMode(PORT(CAM_D8), PIN(CAM_D8), PAL_MODE_ALTERNATE(13));			// D6    -> PE5
+	palSetPadMode(PORT(CAM_D9), PIN(CAM_D9), PAL_MODE_ALTERNATE(13));			// D7    -> PE6
 
-	palSetPadMode(PORT(CAM_EN), PIN(CAM_EN), PAL_MODE_OUTPUT_PUSHPULL);		// CAM_EN
+	palSetPadMode(PORT(CAM_EN), PIN(CAM_EN), PAL_MODE_OUTPUT_PUSHPULL);			// CAM_EN
+	palSetPadMode(PORT(CAM_RESET), PIN(CAM_RESET), PAL_MODE_OUTPUT_PUSHPULL);	// CAM_RESET
 }
 
 void OV2640_TransmitConfig(void)
@@ -828,7 +829,8 @@ void OV2640_init(ssdv_config_t *config) {
 
 	// Power on OV2640
 	TRACE_INFO("CAM  > Switch on");
-	palSetPad(PORT(CAM_EN), PIN(CAM_EN)); // Switch off camera
+	palSetPad(PORT(CAM_EN), PIN(CAM_EN)); 		// Switch on camera
+	palSetPad(PORT(CAM_RESET), PIN(CAM_RESET)); // Toggle reset
 
 	// Send settings to OV2640
 	TRACE_INFO("CAM  > Transmit config to camera");
@@ -858,6 +860,9 @@ void OV2640_deinit(void) {
 	TRACE_INFO("CAM  > Switch off");
 	palClearPad(PORT(CAM_EN), PIN(CAM_EN)); // Switch off camera
 
+	// Deinit pins
+	palSetPadMode(PORT(CAM_RESET), PIN(CAM_RESET), PAL_MODE_INPUT);	// CAM_RESET
+
 	// Release I2C (due to silicon bug of OV2640, it interferes if byte 0x30 transmitted on I2C bus)
 	I2C_unlock();
 }
@@ -865,7 +870,14 @@ void OV2640_deinit(void) {
 bool OV2640_isAvailable(void)
 {
 	I2C_lock();
-	palSetPad(PORT(CAM_EN), PIN(CAM_EN)); // Switch on camera
+
+	// Configure pins
+	palSetPadMode(PORT(CAM_EN), PIN(CAM_EN), PAL_MODE_OUTPUT_PUSHPULL);			// CAM_EN
+	palSetPadMode(PORT(CAM_RESET), PIN(CAM_RESET), PAL_MODE_OUTPUT_PUSHPULL);	// CAM_RESET
+
+	// Switch on camera
+	palSetPad(PORT(CAM_EN), PIN(CAM_EN)); 		// Switch on camera
+	palSetPad(PORT(CAM_RESET), PIN(CAM_RESET)); // Toggle reset
 
 	chThdSleepMilliseconds(100);
 
@@ -877,6 +889,7 @@ bool OV2640_isAvailable(void)
 		ret = false;
 
 	palClearPad(PORT(CAM_EN), PIN(CAM_EN)); // Switch off camera
+	palSetPadMode(PORT(CAM_RESET), PIN(CAM_RESET), PAL_MODE_INPUT);	// CAM_RESET
 	I2C_unlock();
 
 	return ret;

@@ -201,7 +201,7 @@
 #define GPIOD_RADIO_CS             9U
 #define GPIOD_RADIO_GPIO0        10U
 #define GPIOD_PIN11                 11U
-#define GPIOD_PIN12                 12U
+#define GPIOD_RADIO_SDN                 12U
 #define GPIOD_OSC_P1          13U
 #define GPIOD_OSC_P2                 14U
 #define GPIOD_OSC_P3                 15U
@@ -506,8 +506,8 @@
  * PB14 - SPI_MISO                  (alternate 5)
  * PB15 - SPI_MOSI                  (alternate 5)
  */
-#define VAL_GPIOB_MODER             (PIN_MODE_OUTPUT(GPIOB_IO_LED2) |     \
-                                     PIN_MODE_OUTPUT(GPIOB_IO_LED1)|\
+#define VAL_GPIOB_MODER             (PIN_MODE_INPUT(GPIOB_IO_LED2) |     \
+                                     PIN_MODE_INPUT(GPIOB_IO_LED1)|\
                                      PIN_MODE_INPUT(GPIOB_BOOT1) |          \
                                      PIN_MODE_ALTERNATE(GPIOB_SWO) |        \
                                      PIN_MODE_INPUT(GPIOB_GPS_TIMEPULSE) |           \
@@ -517,7 +517,7 @@
                                      PIN_MODE_ALTERNATE(GPIOB_I2C_SCL) |    \
                                      PIN_MODE_ALTERNATE(GPIOB_I2C_SDA) |    \
                                      PIN_MODE_ALTERNATE(GPIOB_IO_TXD) |    \
-                                     PIN_MODE_OUTPUT(GPIOB_CAM_EN) |    \
+                                     PIN_MODE_INPUT(GPIOB_CAM_EN) |    \
                                      PIN_MODE_INPUT(GPIOB_PAC_ALERT) |    \
                                      PIN_MODE_ALTERNATE(GPIOB_SPI_SCK) |    \
                                      PIN_MODE_ALTERNATE(GPIOB_SPI_MISO) |   \
@@ -554,8 +554,8 @@
                                      PIN_OSPEED_HIGH(GPIOB_SPI_SCK) |       \
                                      PIN_OSPEED_HIGH(GPIOB_SPI_MISO) |      \
                                      PIN_OSPEED_HIGH(GPIOB_SPI_MOSI))
-#define VAL_GPIOB_PUPDR             (PIN_PUPDR_PULLUP(GPIOB_IO_LED2) |    \
-                                     PIN_PUPDR_PULLUP(GPIOB_IO_LED1)| \
+#define VAL_GPIOB_PUPDR             (PIN_PUPDR_FLOATING(GPIOB_IO_LED2) |    \
+                                     PIN_PUPDR_FLOATING(GPIOB_IO_LED1)| \
                                      PIN_PUPDR_PULLUP(GPIOB_BOOT1) |        \
                                      PIN_PUPDR_FLOATING(GPIOB_SWO) |        \
                                      PIN_PUPDR_PULLUP(GPIOB_GPS_TIMEPULSE) |         \
@@ -747,12 +747,12 @@
                                      PIN_MODE_INPUT(GPIOD_PIN4) |           \
                                      PIN_MODE_INPUT(GPIOD_PIN5) |           \
                                      PIN_MODE_INPUT(GPIOD_PIN6) |           \
-                                     PIN_MODE_OUTPUT(GPIOD_GPS_RESET) |           \
-                                     PIN_MODE_OUTPUT(GPIOD_RADIO_GPIO1) |           \
-                                     PIN_MODE_OUTPUT(GPIOD_RADIO_CS) |           \
-                                     PIN_MODE_OUTPUT(GPIOD_RADIO_GPIO0) |          \
+                                     PIN_MODE_INPUT(GPIOD_GPS_RESET) |           \
+                                     PIN_MODE_INPUT(GPIOD_RADIO_GPIO1) |           \
+                                     PIN_MODE_INPUT(GPIOD_RADIO_CS) |           \
+                                     PIN_MODE_INPUT(GPIOD_RADIO_GPIO0) |          \
                                      PIN_MODE_INPUT(GPIOD_PIN11) |          \
-                                     PIN_MODE_INPUT(GPIOD_PIN12) |          \
+                                     PIN_MODE_INPUT(GPIOD_RADIO_SDN) |          \
                                      PIN_MODE_OUTPUT(GPIOD_OSC_P1) |          \
                                      PIN_MODE_OUTPUT(GPIOD_OSC_P2) |          \
                                      PIN_MODE_OUTPUT(GPIOD_OSC_P3))
@@ -768,7 +768,7 @@
                                      PIN_OTYPE_PUSHPULL(GPIOD_RADIO_CS) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOD_RADIO_GPIO0) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOD_PIN11) |      \
-                                     PIN_OTYPE_PUSHPULL(GPIOD_PIN12) |      \
+                                     PIN_OTYPE_PUSHPULL(GPIOD_RADIO_SDN) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOD_OSC_P1) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOD_OSC_P2) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOD_OSC_P3))
@@ -784,7 +784,7 @@
                                      PIN_OSPEED_HIGH(GPIOD_RADIO_CS) |       \
                                      PIN_OSPEED_HIGH(GPIOD_RADIO_GPIO0)|       \
                                      PIN_OSPEED_VERYLOW(GPIOD_PIN11) |      \
-                                     PIN_OSPEED_VERYLOW(GPIOD_PIN12) |      \
+                                     PIN_OSPEED_VERYLOW(GPIOD_RADIO_SDN) |      \
                                      PIN_OSPEED_VERYLOW(GPIOD_OSC_P1) |      \
                                      PIN_OSPEED_VERYLOW(GPIOD_OSC_P2) |      \
                                      PIN_OSPEED_VERYLOW(GPIOD_OSC_P3))
@@ -800,7 +800,7 @@
                                      PIN_PUPDR_PULLUP(GPIOD_RADIO_CS) |         \
                                      PIN_PUPDR_PULLUP(GPIOD_RADIO_GPIO0) |        \
                                      PIN_PUPDR_PULLUP(GPIOD_PIN11) |        \
-                                     PIN_PUPDR_PULLUP(GPIOD_PIN12) |        \
+                                     PIN_PUPDR_PULLUP(GPIOD_RADIO_SDN) |        \
                                      PIN_PUPDR_PULLUP(GPIOD_OSC_P1) |        \
                                      PIN_PUPDR_PULLUP(GPIOD_OSC_P2) |        \
                                      PIN_PUPDR_PULLUP(GPIOD_OSC_P3))
@@ -816,7 +816,7 @@
                                      PIN_ODR_HIGH(GPIOD_RADIO_CS) |             \
                                      PIN_ODR_HIGH(GPIOD_RADIO_GPIO0) |            \
                                      PIN_ODR_HIGH(GPIOD_PIN11) |            \
-                                     PIN_ODR_HIGH(GPIOD_PIN12) |            \
+                                     PIN_ODR_HIGH(GPIOD_RADIO_SDN) |            \
                                      PIN_ODR_HIGH(GPIOD_OSC_P1) |            \
                                      PIN_ODR_HIGH(GPIOD_OSC_P2) |            \
                                      PIN_ODR_HIGH(GPIOD_OSC_P3))
@@ -832,7 +832,7 @@
                                      PIN_AFIO_AF(GPIOD_RADIO_CS, 0) |           \
                                      PIN_AFIO_AF(GPIOD_RADIO_GPIO0, 0) |          \
                                      PIN_AFIO_AF(GPIOD_PIN11, 0) |          \
-                                     PIN_AFIO_AF(GPIOD_PIN12, 0) |          \
+                                     PIN_AFIO_AF(GPIOD_RADIO_SDN, 0) |          \
                                      PIN_AFIO_AF(GPIOD_OSC_P1, 0) |          \
                                      PIN_AFIO_AF(GPIOD_OSC_P2, 0) |          \
                                      PIN_AFIO_AF(GPIOD_OSC_P3, 0))
@@ -860,18 +860,18 @@
 #define VAL_GPIOE_MODER             (PIN_MODE_INPUT(GPIOE_PIN0) |       \
                                      PIN_MODE_INPUT(GPIOE_PIN1) |           \
                                      PIN_MODE_INPUT(GPIOE_PIN2) |           \
-                                     PIN_MODE_OUTPUT(GPIOE_CAM_RESET) |      \
+                                     PIN_MODE_INPUT(GPIOE_CAM_RESET) |      \
                                      PIN_MODE_ALTERNATE(GPIOE_CAM_D6) |     \
                                      PIN_MODE_ALTERNATE(GPIOE_CAM_D8) |     \
                                      PIN_MODE_ALTERNATE(GPIOE_CAM_D9) |     \
                                      PIN_MODE_INPUT(GPIOE_PIN7) |        \
-                                     PIN_MODE_OUTPUT(GPIOE_IO_LED3) |           \
+                                     PIN_MODE_INPUT(GPIOE_IO_LED3) |           \
                                      PIN_MODE_INPUT(GPIOE_PIN9) |           \
                                      PIN_MODE_INPUT(GPIOE_SOL_SHORT_EN) |  \
                                      PIN_MODE_INPUT(GPIOE_PIN11) |          \
                                      PIN_MODE_INPUT(GPIOE_PIN12) |     \
                                      PIN_MODE_INPUT(GPIOE_PIN13) |  \
-                                     PIN_MODE_OUTPUT(GPIOE_IO_LED4) |  \
+                                     PIN_MODE_INPUT(GPIOE_IO_LED4) |  \
                                      PIN_MODE_INPUT(GPIOE_PIN15))
 #define VAL_GPIOE_OTYPER            (PIN_OTYPE_PUSHPULL(GPIOE_PIN0) |    \
                                      PIN_OTYPE_PUSHPULL(GPIOE_PIN1) |       \
@@ -913,13 +913,13 @@
                                      PIN_PUPDR_PULLUP(GPIOE_CAM_D8) |       \
                                      PIN_PUPDR_PULLUP(GPIOE_CAM_D9) |       \
                                      PIN_PUPDR_PULLUP(GPIOE_PIN7) |       \
-                                     PIN_PUPDR_PULLUP(GPIOE_IO_LED3) |         \
+                                     PIN_PUPDR_FLOATING(GPIOE_IO_LED3) |         \
                                      PIN_PUPDR_PULLUP(GPIOE_PIN9) |         \
                                      PIN_PUPDR_FLOATING(GPIOE_SOL_SHORT_EN) |\
                                      PIN_PUPDR_PULLUP(GPIOE_PIN11) |        \
                                      PIN_PUPDR_PULLUP(GPIOE_PIN12) |    \
                                      PIN_PUPDR_PULLUP(GPIOE_PIN13) | \
-                                     PIN_PUPDR_PULLUP(GPIOE_IO_LED4) | \
+                                     PIN_PUPDR_FLOATING(GPIOE_IO_LED4) | \
                                      PIN_PUPDR_PULLUP(GPIOE_PIN15))
 #define VAL_GPIOE_ODR               (PIN_ODR_HIGH(GPIOE_PIN0) |          \
                                      PIN_ODR_HIGH(GPIOE_PIN1) |             \
@@ -977,7 +977,7 @@
 #define VAL_GPIOF_MODER             (PIN_MODE_INPUT(GPIOF_PIN0) |           \
                                      PIN_MODE_INPUT(GPIOF_PIN1) |           \
                                      PIN_MODE_INPUT(GPIOF_PIN2) |           \
-                                     PIN_MODE_OUTPUT(GPIOF_GPS_EN) |           \
+                                     PIN_MODE_INPUT(GPIOF_GPS_EN) |           \
                                      PIN_MODE_INPUT(GPIOF_PIN4) |           \
                                      PIN_MODE_INPUT(GPIOF_PIN5) |           \
                                      PIN_MODE_INPUT(GPIOF_PIN6) |           \

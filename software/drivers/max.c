@@ -372,6 +372,11 @@ void GPS_Deinit(void)
 	// Switch MOSFET
 	TRACE_INFO("GPS  > Switch off");
 	palClearPad(PORT(GPS_EN), PIN(GPS_EN));
+
+	// Deinit pins
+	palSetPadMode(PORT(GPS_RESET), PIN(GPS_RESET), PAL_MODE_INPUT);	// GPS reset
+	palSetPadMode(PORT(GPS_RXD), PIN(GPS_RXD), PAL_MODE_INPUT);		// UART RXD
+	palSetPadMode(PORT(GPS_TXD), PIN(GPS_TXD), PAL_MODE_INPUT);		// UART TXD
 }
 
 /**

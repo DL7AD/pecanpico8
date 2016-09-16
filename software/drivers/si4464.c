@@ -302,6 +302,11 @@ void radioShutdown(void) {
 	RADIO_SDN_SET(true);	// Power down chip
 	RF_GPIO1_SET(false);	// Set GPIO1 low
 	initialized = false;
+
+	// Deinit pins
+	palSetPadMode(PORT(RADIO_CS), PIN(RADIO_CS), PAL_MODE_INPUT);		// RADIO CS
+	palSetPadMode(PORT(RADIO_GPIO0), PIN(RADIO_GPIO0), PAL_MODE_INPUT);	// RADIO GPIO0
+	palSetPadMode(PORT(RADIO_GPIO1), PIN(RADIO_GPIO1), PAL_MODE_INPUT);	// RADIO GPIO1
 }
 
 /**

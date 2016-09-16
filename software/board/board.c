@@ -124,5 +124,4 @@ bool mmc_lld_is_write_protected(MMCDriver *mmcp) {
  */
 void boardInit(void) {
 	palClearPad(PORT(IO_LED4), PIN(IO_LED4));	// Show I'M ALIVE
-	palClearPad(PORT(CAM_EN), PIN(CAM_EN));		// Disable camera
 }
