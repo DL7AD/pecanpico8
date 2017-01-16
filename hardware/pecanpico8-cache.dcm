@@ -1,5 +1,9 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP +IO
+K POWER, PWR
+$ENDCMP
+#
 $CMP +OSC
 K POWER, PWR
 $ENDCMP
