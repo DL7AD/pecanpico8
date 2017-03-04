@@ -34,7 +34,7 @@ static const WDGConfig wdgcfg = {
   */
 static void led_cb(void *led_sw) {
 	// Switch LEDs
-	palWritePad(PORT(IO_LED3), PIN(IO_LED3), (bool)led_sw);	// Show I'M ALIVE
+	//palWritePad(PORT(IO_LED3), PIN(IO_LED3), (bool)led_sw);	// Show I'M ALIVE
 	if(error) {
 		palWritePad(PORT(IO_LED1), PIN(IO_LED1), (bool)led_sw);	// Show error
 	} else {
@@ -52,9 +52,21 @@ static void led_cb(void *led_sw) {
   * Main routine is starting up system, runs the software watchdog (module monitoring), controls LEDs
   */
 int main(void) {
+	// Switch on oscillator
+	/*RCC->AHB1ENR |= 0x18;
+	PORT(OSC_P1)->MODER  = PIN_MODE_OUTPUT(PIN(OSC_P1));
+	PORT(OSC_P2)->MODER |= PIN_MODE_OUTPUT(PIN(OSC_P2));
+	PORT(OSC_P3)->MODER |= PIN_MODE_OUTPUT(PIN(OSC_P3));
+	palSetPad(PORT(OSC_P1), PIN(OSC_P1));
+	palSetPad(PORT(OSC_P2), PIN(OSC_P2));
+	palSetPad(PORT(OSC_P3), PIN(OSC_P3));
+
+	for(uint32_t i=0; i<20000000; i++);*/
 
 	halInit();					// Startup HAL
 	chSysInit();				// Startup RTOS
+
+	boost_voltage(true);
 
   /*sduObjectInit(&SDU1);
   sduStart(&SDU1, &serusbcfg);*/
@@ -120,7 +132,7 @@ int main(void) {
 								healthy = true;
 								break;
 							case EVENT_NEW_POINT:
-								healthy = config[i].last_update + S2ST(TRACK_CYCLE_TIME) + wdg_buffer > chVTGetSystemTimeX();
+								healthy = config[i].last_update + S2ST(TRACK_CYCLE_TIME*2) + wdg_buffer > chVTGetSystemTimeX();
 								break;
 						}
 						break;
@@ -152,7 +164,7 @@ int main(void) {
 		}
 
 		// Watchdog TRACKING
-		healthy = watchdog_tracking + S2ST(TRACK_CYCLE_TIME) + wdg_buffer > chVTGetSystemTimeX();
+		/*healthy = watchdog_tracking + S2ST(TRACK_CYCLE_TIME) + wdg_buffer > chVTGetSystemTimeX();
 		lu = chVTGetSystemTimeX() - watchdog_tracking;
 		if(counter % 10 == 0) {
 			if(healthy) {
@@ -163,7 +175,7 @@ int main(void) {
 		}
 		if(!healthy)
 			aerror = true; // Set error flag
-
+		*/
 		// Update hardware (LED, WDG)
 		error = aerror;			// Update error LED flag
 		if(!error)

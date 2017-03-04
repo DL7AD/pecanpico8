@@ -8,7 +8,7 @@
 
 #define ADC_GRP1_NUM_CHANNELS	4		/* Amount of channels (solar, battery, temperature) */
 #define VCC_REF_LOW				1860	/* mV */
-#define VCC_REF_HIGH			3200	/* mV */
+#define VCC_REF_HIGH			3070	/* mV */
 
 #define DIVIDER_VSOL			200/64	/* VSol -- 22kOhm -- ADC -- 10kOhm -- GND */
 #define DIVIDER_VBAT			200/64	/* VBat -- 22KOhm -- ADC -- 10kOhm -- GND */
@@ -107,17 +107,17 @@ void boost_voltage(bool boost)
 	if(boost)
 	{
 
-		// Ramp up to 3.20V
+		// Ramp up to 3.07V
 		palClearPad(PORT(VBOOST), PIN(VBOOST));
 		palSetPadMode(PORT(VBOOST), PIN(VBOOST), PAL_MODE_OUTPUT_PUSHPULL);
 		palClearPad(PORT(VBOOST), PIN(VBOOST));
-		vcc_ref = VCC_REF_LOW;
+		vcc_ref = VCC_REF_HIGH;
 
 	} else {
 
 		// Switch back to 1.86V
 		palSetPadMode(PORT(VBOOST), PIN(VBOOST), PAL_MODE_INPUT);
-		vcc_ref = VCC_REF_HIGH;
+		vcc_ref = VCC_REF_LOW;
 
 	}
 }
