@@ -3111,7 +3111,7 @@ RADIO_CS
 Text Notes 19800 12150 0    60   ~ 0
 USB only work with USB hosts like computer.\nThe USB ID pin used to switch VCC from 1.8V to 3.3V\nUSB Slaves like USB Sticks do not work, because\nUSB ID pin is not connected to STM32.
 Text Notes 6450 3550 0    60   ~ 0
-Clock CTRL may be used to modulate\nthe Si4464. It may also influence the\nclock of the STM32 but only slightly.
+Clock CTRL may be used to modulate\nthe Si4063. It may also influence the\nclock of the STM32 but only slightly.
 Text Notes 2400 10600 0    60   ~ 0
 Voltage can be\nmeasured by IC7
 Text Notes 6100 10600 0    60   ~ 0
