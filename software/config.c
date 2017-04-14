@@ -2,13 +2,13 @@
 #include "debug.h"
 
 module_conf_t config[9];
-uint8_t ssdv2_buffer[1024*100];
+uint8_t ssdv_buffer[1024*100];
 
 // Put your configuration settings here
 void initModules(void)
 {
 	// Module POSITION, APRS 2m AFSK
-	/*chsnprintf(config[0].name, 17, "POS APRS 2m AFSK");		// Instance name
+	chsnprintf(config[0].name, 17, "POS APRS 2m AFSK");		// Instance name
 	config[0].power = 20;									// Power 20 dBm
 	config[0].protocol = PROT_APRS_AFSK;					// Protocol APRS, modulation AFSK
 	config[0].frequency.type = FREQ_DYNAMIC;				// Dynamic frequency allocation
@@ -17,8 +17,8 @@ void initModules(void)
 	config[0].init_delay = 0;								// Module startup delay in msec
 	config[0].trigger.type = TRIG_EVENT;					// Trigger transmission on event
 	config[0].trigger.event = EVENT_NEW_POINT;				// Trigger when new track point released
-	chsnprintf(config[0].aprs_config.callsign, 6, "DL7AD");	// APRS Callsign
-	config[0].aprs_config.ssid = 12;						// APRS SSID
+	chsnprintf(config[0].aprs_config.callsign, 7, "LU4CMF");// APRS Callsign
+	config[0].aprs_config.ssid = 11;						// APRS SSID
 	config[0].aprs_config.symbol = SYM_BALLOON;				// APRS Symbol
 	chsnprintf(config[0].aprs_config.path, 16, "WIDE1-1");	// APRS Path
 	config[0].aprs_config.preamble = 300;					// APRS Preamble
@@ -29,8 +29,8 @@ void initModules(void)
 	config[0].aprs_config.tel[4] = TEL_HUM;					// APRS Telemetry parameter 5
 	config[0].aprs_config.tel_encoding = TRUE;				// Transmit Telemetry encoding information activated
 	config[0].aprs_config.tel_encoding_cycle = 3600;		// Transmit Telemetry encoding information every 3600sec
-	chsnprintf(config[0].aprs_config.tel_comment, 18, "http://aerocene.org");// Telemetry comment
-	MODULE_POSITION(&config[0]);*/
+	chsnprintf(config[0].aprs_config.tel_comment, 18, "http://tkrahn.org");// Telemetry comment
+	MODULE_POSITION(&config[0]);
 
 	// Module POSITION, APRS 2m 2GFSK
 	/*chsnprintf(config[1].name, 18, "POS APRS 2m 2GFSK");	// Instance name
@@ -81,17 +81,17 @@ void initModules(void)
 	config[3].frequency.type = FREQ_DYNAMIC;				// Static frequency allocation
 	config[3].frequency.hz = 144800000;						// Transmission frequency 144.800 MHz
 	config[3].frequency.method = APRS_REGION_FREQ_2M;		// Determine local APRS frequency on 2m
-	config[3].init_delay = 0;							// Module startup delay in msec
-	config[3].packet_spacing = 10000;						// Packet spacing in ms
+	config[3].init_delay = 10000;							// Module startup delay in msec
+	config[3].packet_spacing = 20000;						// Packet spacing in ms
 	config[3].trigger.type = TRIG_TIMEOUT;					// Trigger transmission on timeout (Periodic cycling)
 	config[3].trigger.timeout = 10;							// Timeout 10 sec
-	chsnprintf(config[3].aprs_config.callsign, 6, "KT5TK");// APRS Callsign
-	config[3].aprs_config.ssid = 12;						// APRS SSID
+	chsnprintf(config[3].aprs_config.callsign, 7, "LU4CMF");// APRS Callsign
+	config[3].aprs_config.ssid = 11;						// APRS SSID
 	config[3].aprs_config.preamble = 200;					// APRS Preamble
-	chsnprintf(config[3].ssdv_config.callsign, 6, "KT5TK");// SSDV Callsign
-	config[3].ssdv_config.ram_buffer = ssdv2_buffer;		// Camera buffer
-	config[3].ssdv_config.ram_size = sizeof(ssdv2_buffer);	// Buffer size
-	config[3].ssdv_config.res = RES_VGA;					// Resolution VGA
+	chsnprintf(config[3].ssdv_config.callsign, 7, "LU4CMF");// SSDV Callsign
+	config[3].ssdv_config.ram_buffer = ssdv_buffer;		// Camera buffer
+	config[3].ssdv_config.ram_size = sizeof(ssdv_buffer);	// Buffer size
+	config[3].ssdv_config.res = RES_QVGA;					// Resolution QVGA
 	MODULE_IMAGE(&config[3]);
 
 	// Module POSITION, Morse 2m OOK
@@ -109,25 +109,25 @@ void initModules(void)
 	MODULE_POSITION(&config[4]);*/
 
 	// Module IMAGE, APRS 2m 2GFSK
-	chsnprintf(config[5].name, 13, "IMG 2GFSK 2m");			// Instance name
+	/*chsnprintf(config[5].name, 13, "IMG 2GFSK 2m");			// Instance name
 	config[5].power = 20;									// Power 20 dBm
 	config[5].protocol = PROT_APRS_2GFSK;					// Protocol APRS SSDV, modulation 2GFSK
 	config[5].frequency.type = FREQ_STATIC;					// Static frequency allocation
 	config[5].frequency.hz = 144860000;						// Transmission frequency 144.860 MHz
 	config[5].frequency.method = FREQ_STATIC;				// Determine local APRS frequency on 2m
 	config[5].init_delay = 0;								// Module startup delay in msec
-	//config[5].sleep_config.type = SLEEP_WHEN_VBAT_BELOW_THRES;// Sleeping type
-	//config[5].sleep_config.vbat_thres = 0;					// Sleeping voltage threshold
+	config[5].sleep_config.type = SLEEP_WHEN_VBAT_BELOW_THRES;// Sleeping type
+	config[5].sleep_config.vbat_thres = 0;					// Sleeping voltage threshold
 	config[5].trigger.type = TRIG_TIMEOUT;					// Trigger transmission on timeout (Periodic cycling)
 	config[5].trigger.timeout = 10;							// Timeout 10 sec
 	chsnprintf(config[5].aprs_config.callsign, 6, "DL7AD");	// APRS Callsign
 	config[5].aprs_config.ssid = 14;						// APRS SSID
 	config[5].aprs_config.preamble = 40;					// APRS Preamble
 	chsnprintf(config[5].ssdv_config.callsign, 7, "DL7AD2");// SSDV Callsign
-	config[5].ssdv_config.ram_buffer = ssdv2_buffer;		// Camera buffer
-	config[5].ssdv_config.ram_size = sizeof(ssdv2_buffer);	// Buffer size
+	config[5].ssdv_config.ram_buffer = ssdv_buffer;			// Camera buffer
+	config[5].ssdv_config.ram_size = sizeof(ssdv_buffer);	// Buffer size
 	config[5].ssdv_config.res = RES_VGA;					// Resolution VGA
-	//MODULE_IMAGE(&config[5]);
+	MODULE_IMAGE(&config[5]);*/
 
 	// Module IMAGE, SSDV 2m 2FSK
 	/*chsnprintf(config[6].name, 12, "IMG 2FSK 2m");			// Instance name
@@ -145,8 +145,8 @@ void initModules(void)
 	config[6].fsk_config.baud = 600;						// Baudrate
 	config[6].fsk_config.shift = 1000;						// Frequency shift in Hz
 	chsnprintf(config[6].ssdv_config.callsign, 6, "DK0TU");// SSDV Callsign
-	config[6].ssdv_config.ram_buffer = ssdv2_buffer;		// Camera buffer
-	config[6].ssdv_config.ram_size = sizeof(ssdv2_buffer);	// Buffer size
+	config[6].ssdv_config.ram_buffer = ssdv_buffer;		// Camera buffer
+	config[6].ssdv_config.ram_size = sizeof(ssdv_buffer);	// Buffer size
 	config[6].ssdv_config.res = RES_VGA;					// Resolution VGA
 	MODULE_IMAGE(&config[6]);*/
 

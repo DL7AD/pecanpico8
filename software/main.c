@@ -34,7 +34,7 @@ static const WDGConfig wdgcfg = {
   */
 static void led_cb(void *led_sw) {
 	// Switch LEDs
-	//palWritePad(PORT(IO_LED3), PIN(IO_LED3), (bool)led_sw);	// Show I'M ALIVE
+	palWritePad(PORT(IO_LED3), PIN(IO_LED3), (bool)led_sw);	// Show I'M ALIVE
 	if(error) {
 		palWritePad(PORT(IO_LED1), PIN(IO_LED1), (bool)led_sw);	// Show error
 	} else {
@@ -68,18 +68,18 @@ int main(void) {
 
 	boost_voltage(true);
 
-  /*sduObjectInit(&SDU1);
-  sduStart(&SDU1, &serusbcfg);*/
+	/*sduObjectInit(&SDU1);
+	sduStart(&SDU1, &serusbcfg);*/
 
-  /*
-   * Activates the USB driver and then the USB bus pull-up on D+.
-   * Note, a delay is inserted in order to not have to disconnect the cable
-   * after a reset.
-   */
-  /*usbDisconnectBus(serusbcfg.usbp);
-  chThdSleepMilliseconds(3000);
-  usbStart(serusbcfg.usbp, &usbcfg);
-  usbConnectBus(serusbcfg.usbp);*/
+	/*
+	* Activates the USB driver and then the USB bus pull-up on D+.
+	* Note, a delay is inserted in order to not have to disconnect the cable
+	* after a reset.
+	*/
+	/*usbDisconnectBus(serusbcfg.usbp);
+	chThdSleepMilliseconds(3000);
+	usbStart(serusbcfg.usbp, &usbcfg);
+	usbConnectBus(serusbcfg.usbp);*/
 
 
 	DEBUG_INIT();				// Debug Init (Serial debug port, LEDs)
@@ -164,7 +164,7 @@ int main(void) {
 		}
 
 		// Watchdog TRACKING
-		/*healthy = watchdog_tracking + S2ST(TRACK_CYCLE_TIME) + wdg_buffer > chVTGetSystemTimeX();
+		healthy = watchdog_tracking + S2ST(TRACK_CYCLE_TIME) + wdg_buffer > chVTGetSystemTimeX();
 		lu = chVTGetSystemTimeX() - watchdog_tracking;
 		if(counter % 10 == 0) {
 			if(healthy) {
@@ -175,7 +175,7 @@ int main(void) {
 		}
 		if(!healthy)
 			aerror = true; // Set error flag
-		*/
+
 		// Update hardware (LED, WDG)
 		error = aerror;			// Update error LED flag
 		if(!error)

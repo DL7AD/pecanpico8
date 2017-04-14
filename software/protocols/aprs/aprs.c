@@ -123,8 +123,6 @@ uint32_t aprs_encode_position(uint8_t* message, mod_t mod, const aprs_config_t *
 		loss_of_gps_counter = 0;
 	}
 
-	ax25_send_string(&packet, " Pegasus"); // FIXME: Temporary
-
 	temp[2] = 0;
 
 	ax25_send_byte(&packet, '|');

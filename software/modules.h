@@ -19,7 +19,7 @@
 	chMtxObjectInit(&interference_mtx); \
 	chMtxObjectInit(&camera_mtx); \
 	chMtxObjectInit(&radio_mtx); \
-	/*MODULE_TRACKING(CYCLE_TIME);  Tracker data input */ \
+	MODULE_TRACKING(CYCLE_TIME); /* Tracker data input */ \
 	chThdSleepMilliseconds(1000); /* Give Tracking manager some time to fill first track point */ \
 }
 
