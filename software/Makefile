@@ -117,12 +117,10 @@ CSRC = $(STARTUPSRC) \
        $(CHIBIOS)/os/various/syscalls.c \
        $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
-       $(CHIBIOS)/os/various/fatfs_bindings/fatfs_diskio.c \
        modules/tracking.c \
        modules/position.c \
        modules/image.c \
        modules/log.c \
-       modules/error.c \
        protocols/ssdv/ssdv.c \
        protocols/ssdv/rs8.c \
        protocols/aprs/aprs.c \
@@ -139,7 +137,6 @@ CSRC = $(STARTUPSRC) \
        drivers/flash/flash.c \
        drivers/flash/helper.c \
        drivers/flash/ihex.c \
-       drivers/flash/ihexhelper.c \
        debug.c \
        radio.c \
        sleep.c \
@@ -148,8 +145,7 @@ CSRC = $(STARTUPSRC) \
        math/sgp4.c \
        math/geofence.c \
        config.c \
-       fatfs/src/ff.c \
-       drivers/usbcfg.c \
+       watchdog.c \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -240,8 +236,7 @@ UADEFS =
 
 # List all user directories here
 UINCDIR = modules/ drivers/ drivers/wrapper/ protocols/aprs \
-          protocols/ssdv protocols/morse math/ fatfs/src/ \
-          drivers/flash/
+          protocols/ssdv protocols/morse math/ drivers/flash/
 
 # List the user directory to look for the libraries here
 ULIBDIR =

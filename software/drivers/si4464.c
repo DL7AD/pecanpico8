@@ -81,7 +81,7 @@ void Si4464_Init(mod_t modulation) {
 			setModem2GFSK();
 			break;
 		case MOD_DOMINOEX16:
-			TRACE_WARN("SI   > Unimplemented modulation %s", VAL2MOULATION(modulation)); // TODO: Implement DominoEX16
+			TRACE_WARN("SI   > Unimplemented modulation DominoEX16"); // TODO: Implement DominoEX16
 	}
 
 	// Temperature readout
@@ -394,4 +394,3 @@ uint8_t dBm2powerLvl(int32_t dBm) {
 bool isRadioInitialized(void) {
 	return initialized;
 }
-
